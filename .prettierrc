@@ -4,5 +4,7 @@
 	"useTabs": true,
 	"semi": false,
 	"singleQuote": true,
-	"printWidth": 120
+	"printWidth": 80,
+	"jsxBracketSameLine": false,
+	"bracketSameLine": false
 }
