@@ -7,12 +7,22 @@ import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Avatar, Stack, Tooltip } from '@mui/material'
 
-const ButtonAppBar = () => {
+type AppBarProps = {
+	username: string | undefined
+}
+
+const ButtonAppBar = ({ username }: AppBarProps) => {
 	return (
 		<Box sx={{ flexGrow: 1 }}>
-			<AppBar position="static">
+			<AppBar position="fixed">
 				<Toolbar>
-					<IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+					<IconButton
+						size="large"
+						edge="start"
+						color="inherit"
+						aria-label="menu"
+						sx={{ mr: 2 }}
+					>
 						<MenuIcon />
 					</IconButton>
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
@@ -25,7 +35,9 @@ const ButtonAppBar = () => {
 					</Stack>
 					<Button color="inherit">Login</Button>
 					<Tooltip title={''}>
-						<Avatar src={''} />
+						<Avatar src={''} alt={username}>
+							{username}
+						</Avatar>
 					</Tooltip>
 				</Toolbar>
 			</AppBar>
