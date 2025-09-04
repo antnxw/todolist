@@ -6,23 +6,19 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Avatar, Stack, Tooltip } from '@mui/material'
+import { ExitToApp } from '@mui/icons-material'
 
 type AppBarProps = {
 	username: string | undefined
+	onLogout: () => void
 }
 
-const ButtonAppBar = ({ username }: AppBarProps) => {
+const ButtonAppBar = ({ username, onLogout }: AppBarProps) => {
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
 				<Toolbar>
-					<IconButton
-						size="large"
-						edge="start"
-						color="inherit"
-						aria-label="menu"
-						sx={{ mr: 2 }}
-					>
+					<IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
 						<MenuIcon />
 					</IconButton>
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
@@ -33,12 +29,30 @@ const ButtonAppBar = ({ username }: AppBarProps) => {
 							About
 						</Typography>
 					</Stack>
-					<Button color="inherit">Login</Button>
-					<Tooltip title={''}>
-						<Avatar src={''} alt={username}>
-							{username}
-						</Avatar>
-					</Tooltip>
+
+					{username ? (
+						<Stack direction="row" spacing={2} alignItems="center">
+							<Button
+								color="inherit"
+								onClick={onLogout}
+								startIcon={<ExitToApp />}
+								sx={{
+									'&:hover': {
+										backgroundColor: 'rgba(255, 255, 255, 0.1)',
+									},
+								}}
+							>
+								Exit
+							</Button>
+							<Tooltip title={username}>
+								<Avatar src={''} alt={username}>
+									{username && username.length > 0 ? username.charAt(0).toUpperCase() : 'U'}
+								</Avatar>
+							</Tooltip>
+						</Stack>
+					) : (
+						<Button color="inherit">Login</Button>
+					)}
 				</Toolbar>
 			</AppBar>
 		</Box>
