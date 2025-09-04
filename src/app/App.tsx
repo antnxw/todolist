@@ -14,9 +14,14 @@ function App() {
 	const userFromLS = autoLogin()
 	const [user, setUser] = useState<UserType | null>(userFromLS)
 
+	const handleLogout = () => {
+		localStorage.removeItem('access_token')
+		setUser(null)
+	}
+
 	return (
 		<>
-			<AppBar username={user?.username} />
+			<AppBar username={user?.username} onLogout={handleLogout} />
 			<div style={{ marginTop: '100px' }} />
 			{user ? <Todos /> : <Auth setUser={setUser} />}
 		</>

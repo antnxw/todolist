@@ -8,7 +8,7 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 } from '@mui/material'
-import { AccountCircle, Lock } from '@mui/icons-material'
+import { AccountCircle, Lock, Visibility, VisibilityOff } from '@mui/icons-material'
 import {
 	type MouseEvent,
 	type SyntheticEvent,
@@ -18,9 +18,8 @@ import {
 } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import type { UserType } from '../model/userType.ts'
-import { rootApi } from '../../../shared/api/rootApi.ts'
 import { useSnackbar } from 'notistack'
-import type { AxiosError } from 'axios'
+import { loginUser, registerUser } from '../api/userApi.ts'
 
 type AuthProps = {
 	setUser: Dispatch<SetStateAction<UserType | null>>
@@ -40,35 +39,29 @@ const Auth = ({ setUser }: AuthProps) => {
 		setPassword('')
 	}
 
-	const handleEmailChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>
-	) => {
+	const handleEmailChange = (e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 		setEmail(e.currentTarget.value)
 	}
 
-	const handlePasswordChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>
-	) => {
+	const handlePasswordChange = (e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 		setPassword(e.currentTarget.value)
 	}
 
 	const handleLogin = async () => {
 		setLoading(true)
 		try {
-			const loginData = await rootApi.post<UserType>('/auth/login', {
-				username: email,
-				password: password,
-			})
+			const userData = await loginUser(email, password)
 
-			const accessToken = loginData.data.access_token
-			localStorage.setItem('access_token', accessToken)
-			console.warn(jwtDecode(accessToken))
-			setUser(loginData.data)
-			enqueueSnackbar('Welcome back!', { variant: 'success' })
-			handleClearFields()
+			if (userData && userData.access_token) {
+				const accessToken = userData.access_token
+				localStorage.setItem('access_token', accessToken)
+				console.warn(jwtDecode(accessToken))
+				setUser(userData)
+				enqueueSnackbar('Welcome back!', { variant: 'success' })
+				handleClearFields()
+			}
 		} catch (error) {
-			const axiosError = error as AxiosError<{ message: string }>
-			enqueueSnackbar(axiosError.response?.data.message || 'Unknown error', {
+			enqueueSnackbar(error instanceof Error ? error.message : 'Unknown error', {
 				variant: 'error',
 			})
 		} finally {
@@ -79,33 +72,29 @@ const Auth = ({ setUser }: AuthProps) => {
 	const handleRegister = async () => {
 		setLoading(true)
 		try {
-			const registerResponse = await fetch(
-				'https://todos-be.vercel.app/auth/register',
-				{
-					method: 'POST',
-					mode: 'cors',
-					body: JSON.stringify({ username: email, password }),
-					headers: { 'Content-Type': 'application/json' },
-				}
-			)
+			const userData = await registerUser(email, password)
 
-			if (!registerResponse.ok) {
-				new Error('Username already exists')
+			if (userData && userData.access_token) {
+				const accessToken = userData.access_token
+				localStorage.setItem('access_token', accessToken)
+				console.warn(jwtDecode(accessToken))
+				setUser(userData)
+				enqueueSnackbar('Registration successful!', { variant: 'success' })
+				handleClearFields()
 			}
-			handleClearFields()
 		} catch (error) {
-			alert(error)
+			enqueueSnackbar(error instanceof Error ? error.message : 'Registration failed', {
+				variant: 'error',
+			})
 		} finally {
 			setLoading(false)
 		}
 	}
 
-	const handleChange = (
-		_event: MouseEvent<HTMLElement>,
-		newAlignment: string
-	) => {
+	const handleChange = (_event: MouseEvent<HTMLElement>, newAlignment: string) => {
 		setLoginFormName(newAlignment)
 	}
+
 	const handleClickShowPassword = () => setShowPassword(!showPassword)
 
 	return (
@@ -127,6 +116,7 @@ const Auth = ({ setUser }: AuthProps) => {
 					Register
 				</ToggleButton>
 			</ToggleButtonGroup>
+
 			{loginFormName === 'login' ? (
 				<Stack spacing={2}>
 					<TextField
@@ -154,8 +144,8 @@ const Auth = ({ setUser }: AuthProps) => {
 						value={password}
 						onChange={handlePasswordChange}
 						size={'small'}
-						label="password"
-						type="pssword"
+						label="Password"
+						type={showPassword ? 'text' : 'password'}
 						variant="filled"
 						slotProps={{
 							input: {
@@ -167,12 +157,12 @@ const Auth = ({ setUser }: AuthProps) => {
 								endAdornment: (
 									<InputAdornment position={'end'}>
 										<IconButton
-											aria-label={
-												showPassword ? 'hide password' : 'show password'
-											}
+											aria-label={showPassword ? 'hide password' : 'show password'}
 											onClick={handleClickShowPassword}
 											edge={'end'}
-										/>
+										>
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
 									</InputAdornment>
 								),
 							},
@@ -194,7 +184,7 @@ const Auth = ({ setUser }: AuthProps) => {
 						value={email}
 						onChange={handleEmailChange}
 						size={'small'}
-						label="email"
+						label="Email"
 						variant="filled"
 						slotProps={{
 							input: {
@@ -211,14 +201,25 @@ const Auth = ({ setUser }: AuthProps) => {
 						value={password}
 						onChange={handlePasswordChange}
 						size={'small'}
-						label="password"
-						type="pssword"
+						label="Password"
+						type={showPassword ? 'text' : 'password'}
 						variant="filled"
 						slotProps={{
 							input: {
 								startAdornment: (
 									<InputAdornment position="start">
 										<AccountCircle />
+									</InputAdornment>
+								),
+								endAdornment: (
+									<InputAdornment position={'end'}>
+										<IconButton
+											aria-label={showPassword ? 'hide password' : 'show password'}
+											onClick={handleClickShowPassword}
+											edge={'end'}
+										>
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
 									</InputAdornment>
 								),
 							},
@@ -237,4 +238,5 @@ const Auth = ({ setUser }: AuthProps) => {
 		</Container>
 	)
 }
+
 export default Auth
