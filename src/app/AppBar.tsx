@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Avatar, Stack, Tooltip } from '@mui/material'
 import { ExitToApp } from '@mui/icons-material'
+import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts'
 
 type AppBarProps = {
 	username: string | undefined
@@ -14,16 +15,24 @@ type AppBarProps = {
 }
 
 const ButtonAppBar = ({ username, onLogout }: AppBarProps) => {
+	const todos = useTodosStore((state) => state.todos)
+	const undoneTodos = todos.filter((todo) => !todo.completed)
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
 				<Toolbar>
-					<IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+					<IconButton
+						size="large"
+						edge="start"
+						color="inherit"
+						aria-label="menu"
+						sx={{ mr: 2 }}
+					>
 						<MenuIcon />
 					</IconButton>
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
 						<Typography variant="h6" component="div">
-							Todos
+							Todos{' ' + undoneTodos.length}
 						</Typography>
 						<Typography variant="h6" component="div">
 							About
@@ -46,7 +55,9 @@ const ButtonAppBar = ({ username, onLogout }: AppBarProps) => {
 							</Button>
 							<Tooltip title={username}>
 								<Avatar src={''} alt={username}>
-									{username && username.length > 0 ? username.charAt(0).toUpperCase() : 'U'}
+									{username && username.length > 0
+										? username.charAt(0).toUpperCase()
+										: 'U'}
 								</Avatar>
 							</Tooltip>
 						</Stack>
