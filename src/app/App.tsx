@@ -22,7 +22,7 @@ function App() {
 	return (
 		<>
 			<AppBar username={user?.username} onLogout={handleLogout} />
-			<div style={{ marginTop: '100px' }} />
+			<div style={{ marginTop: '120px' }} />
 			{user ? <Todos /> : <Auth setUser={setUser} />}
 		</>
 	)
