@@ -8,24 +8,24 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 } from '@mui/material'
-import { AccountCircle, Lock, Visibility, VisibilityOff } from '@mui/icons-material'
 import {
-	type MouseEvent,
-	type SyntheticEvent,
-	useState,
-	type SetStateAction,
-	type Dispatch,
-} from 'react'
+	AccountCircle,
+	Lock,
+	Visibility,
+	VisibilityOff,
+} from '@mui/icons-material'
+import { type MouseEvent, type SyntheticEvent, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import type { UserType } from '../model/userType.ts'
 import { useSnackbar } from 'notistack'
 import { loginUser, registerUser } from '../api/userApi.ts'
 
 type AuthProps = {
-	setUser: Dispatch<SetStateAction<UserType | null>>
+	setUser: (user: UserType | null) => void
 }
 
 const Auth = ({ setUser }: AuthProps) => {
+	// ... остальной код без изменений
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [loading, setLoading] = useState(false)
@@ -39,11 +39,15 @@ const Auth = ({ setUser }: AuthProps) => {
 		setPassword('')
 	}
 
-	const handleEmailChange = (e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+	const handleEmailChange = (
+		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>
+	) => {
 		setEmail(e.currentTarget.value)
 	}
 
-	const handlePasswordChange = (e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+	const handlePasswordChange = (
+		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>
+	) => {
 		setPassword(e.currentTarget.value)
 	}
 
@@ -61,9 +65,12 @@ const Auth = ({ setUser }: AuthProps) => {
 				handleClearFields()
 			}
 		} catch (error) {
-			enqueueSnackbar(error instanceof Error ? error.message : 'Unknown error', {
-				variant: 'error',
-			})
+			enqueueSnackbar(
+				error instanceof Error ? error.message : 'Unknown error',
+				{
+					variant: 'error',
+				}
+			)
 		} finally {
 			setLoading(false)
 		}
@@ -83,15 +90,21 @@ const Auth = ({ setUser }: AuthProps) => {
 				handleClearFields()
 			}
 		} catch (error) {
-			enqueueSnackbar(error instanceof Error ? error.message : 'Registration failed', {
-				variant: 'error',
-			})
+			enqueueSnackbar(
+				error instanceof Error ? error.message : 'Registration failed',
+				{
+					variant: 'error',
+				}
+			)
 		} finally {
 			setLoading(false)
 		}
 	}
 
-	const handleChange = (_event: MouseEvent<HTMLElement>, newAlignment: string) => {
+	const handleChange = (
+		_event: MouseEvent<HTMLElement>,
+		newAlignment: string
+	) => {
 		setLoginFormName(newAlignment)
 	}
 
@@ -157,7 +170,9 @@ const Auth = ({ setUser }: AuthProps) => {
 								endAdornment: (
 									<InputAdornment position={'end'}>
 										<IconButton
-											aria-label={showPassword ? 'hide password' : 'show password'}
+											aria-label={
+												showPassword ? 'hide password' : 'show password'
+											}
 											onClick={handleClickShowPassword}
 											edge={'end'}
 										>
@@ -214,7 +229,9 @@ const Auth = ({ setUser }: AuthProps) => {
 								endAdornment: (
 									<InputAdornment position={'end'}>
 										<IconButton
-											aria-label={showPassword ? 'hide password' : 'show password'}
+											aria-label={
+												showPassword ? 'hide password' : 'show password'
+											}
 											onClick={handleClickShowPassword}
 											edge={'end'}
 										>

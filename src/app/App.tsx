@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
@@ -6,22 +5,15 @@ import '@fontsource/roboto/700.css'
 
 import AppBar from './AppBar.tsx'
 import Auth from '../entities/User/ui/Auth.tsx'
-import { type UserType } from '../entities/User/model/userType.ts'
 import Todos from '../entities/Todo/ui/Todos.tsx'
-import { autoLogin } from '../shared/util/autoLogin.ts'
+import { useUserStore } from '../entities/User/model/store/userStore.ts'
 
 function App() {
-	const userFromLS = autoLogin()
-	const [user, setUser] = useState<UserType | null>(userFromLS)
-
-	const handleLogout = () => {
-		localStorage.removeItem('access_token')
-		setUser(null)
-	}
+	const { user, setUser, logout } = useUserStore()
 
 	return (
 		<>
-			<AppBar username={user?.username} onLogout={handleLogout} />
+			<AppBar username={user?.username} onLogout={logout} />
 			<div style={{ marginTop: '120px' }} />
 			{user ? <Todos /> : <Auth setUser={setUser} />}
 		</>
