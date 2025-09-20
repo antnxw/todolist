@@ -6,16 +6,22 @@ import '@fontsource/roboto/700.css'
 import AppBar from './AppBar.tsx'
 import Auth from '../entities/User/ui/Auth.tsx'
 import Todos from '../entities/Todo/ui/Todos.tsx'
-import { useUserStore } from '../entities/User/model/store/userStore.ts'
+import { selectUser } from '../entities/User/model/store/userStore.ts'
+import { useAppSelector } from './store.ts'
 
 function App() {
-	const { user, setUser, logout } = useUserStore()
+	const user = useAppSelector(selectUser)
 
 	return (
 		<>
-			<AppBar username={user?.username} onLogout={logout} />
+			<AppBar
+				username={undefined}
+				onLogout={function (): void {
+					throw new Error('Function not implemented.')
+				}}
+			/>
 			<div style={{ marginTop: '120px' }} />
-			{user ? <Todos /> : <Auth setUser={setUser} />}
+			{user ? <Todos /> : <Auth />}
 		</>
 	)
 }

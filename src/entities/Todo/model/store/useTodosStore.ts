@@ -15,12 +15,20 @@ export const useTodosStore = create<TodosState>()(
 		return {
 			todos: mockTodos,
 			addTodo: (newTodo: TodoType) =>
-				set((state) => ({ todos: [newTodo, ...state.todos] })),
+				set(
+					(state) => ({ todos: [newTodo, ...state.todos] }),
+					undefined,
+					'add-Todo'
+				),
 			setTodos: (todos: TodoType[]) => set({ todos }),
 			deleteTodo: (id: string) =>
-				set((state) => ({
-					todos: state.todos.filter((todo) => todo._id !== id),
-				})),
+				set(
+					(state) => ({
+						todos: state.todos.filter((todo) => todo._id !== id),
+					}),
+					undefined,
+					'add-Todo'
+				),
 		}
 	})
 )
