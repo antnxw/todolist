@@ -1,34 +1,33 @@
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
-import { mockTodos } from '../mockTodos.ts'
-import type { TodoType } from '../todoType.ts'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { mockTodos } from '../mockTodos'
+import type { TodoType } from '../todoType'
 
 type TodosState = {
 	todos: TodoType[]
-	addTodo: (newTodo: TodoType) => void
-	setTodos: (todos: TodoType[]) => void
-	deleteTodo: (id: string) => void
 }
 
-export const useTodosStore = create<TodosState>()(
-	devtools((set) => {
-		return {
-			todos: mockTodos,
-			addTodo: (newTodo: TodoType) =>
-				set(
-					(state) => ({ todos: [newTodo, ...state.todos] }),
-					undefined,
-					'add-Todo'
-				),
-			setTodos: (todos: TodoType[]) => set({ todos }),
-			deleteTodo: (id: string) =>
-				set(
-					(state) => ({
-						todos: state.todos.filter((todo) => todo._id !== id),
-					}),
-					undefined,
-					'add-Todo'
-				),
-		}
-	})
-)
+const initialState: TodosState = {
+	todos: mockTodos,
+}
+
+export const useTodosStore = createSlice({
+	name: 'todosSlice',
+	initialState,
+	reducers: {
+		addTodo: (state, action: PayloadAction<TodoType>) => {
+			state.todos.unshift(action.payload)
+		},
+		setTodos: (state, action: PayloadAction<TodoType[]>) => {
+			state.todos = action.payload
+		},
+		deleteTodo: (state, action: PayloadAction<string>) => {
+			state.todos = state.todos.filter((todo) => todo._id !== action.payload)
+		},
+	},
+	selectors: {
+		selectTodos: (state: TodosState) => state.todos,
+	},
+})
+
+export const { addTodo, setTodos, deleteTodo } = useTodosStore.actions
+export const { selectTodos } = useTodosStore.selectors

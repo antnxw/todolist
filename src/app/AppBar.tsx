@@ -4,25 +4,60 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
+import {
+	Avatar,
+	Menu,
+	MenuItem,
+	Stack,
+	ToggleButton,
+	Tooltip,
+	useColorScheme,
+} from '@mui/material'
+import { Nightlight, WbSunny } from '@mui/icons-material'
 import MenuIcon from '@mui/icons-material/Menu'
-import { Avatar, Stack, Tooltip } from '@mui/material'
-import { ExitToApp } from '@mui/icons-material'
-import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts'
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { selectUser } from '../entities/User/model/store/userStore.ts'
-import { useAppDispatch } from './store.ts'
+import { selectTodos } from '../entities/Todo/model/store/useTodosStore.ts'
+import {
+	removeUser,
+	selectUser,
+} from '../entities/User/model/store/userStore.ts'
+import React, { useState } from 'react'
+import { useAppDispatch, useAppSelector } from './store.ts'
+import { NavLink, useLocation, useNavigate } from 'react-router'
 
-type AppBarProps = {
-	username: string | undefined
-	onLogout: () => void
-}
-
-const ButtonAppBar = ({ username, onLogout }: AppBarProps) => {
-	const todos = useTodosStore((store) => store.todos)
-	const undoneTodos = todos.filter((todo) => !todo.completed)
-	const user = useSelector(selectUser)
+const ButtonAppBar = () => {
+	const { mode, setMode } = useColorScheme()
+	const user = useAppSelector(selectUser)
 	const dispatch = useAppDispatch()
+	const todos = useAppSelector(selectTodos)
+	const undoneTodos = todos.filter((todo) => !todo.completed)
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+
+	const location = useLocation()
+	const navigate = useNavigate()
+
+	const isAboutPage = location.pathname === '/about'
+
+	if (!mode) {
+		return null
+	}
+
+	const handleUserLogout = () => {
+		dispatch(removeUser())
+		localStorage.removeItem('access_token')
+		setAnchorEl(null)
+	}
+
+	const handleToggle = () => {
+		setMode(mode === 'light' ? 'dark' : 'light')
+	}
+
+	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget as HTMLElement)
+	}
+
+	const handleClose = () => {
+		setAnchorEl(null)
+	}
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -38,39 +73,73 @@ const ButtonAppBar = ({ username, onLogout }: AppBarProps) => {
 						<MenuIcon />
 					</IconButton>
 					<Stack direction={'row'} spacing={2} style={{ flexGrow: 1 }}>
+						{user && (
+							<Typography variant="h6" component="div">
+								Todos {' ' + undoneTodos.length}
+							</Typography>
+						)}
 						<Typography variant="h6" component="div">
-							Todos{' ' + undoneTodos.length}
-						</Typography>
-						<Typography variant="h6" component="div">
-							About
+							<NavLink to={isAboutPage ? '/' : '/about'}>
+								{isAboutPage ? 'Home' : 'About'}
+							</NavLink>
 						</Typography>
 					</Stack>
 
-					{username ? (
-						<Stack direction="row" spacing={2} alignItems="center">
+					<Stack direction={'row'} spacing={2}>
+						<ToggleButton
+							value={mode}
+							onChange={handleToggle}
+							sx={{
+								borderRadius: '12px',
+								boxShadow: 3,
+							}}
+						>
+							{mode === 'dark' ? <WbSunny /> : <Nightlight />}
+						</ToggleButton>
+						{user ? (
+							<>
+								<Tooltip title={user.username}>
+									<Avatar
+										src={''}
+										alt={user.username}
+										sx={{
+											marginTop: '5px !important',
+											textTransform: 'capitalize',
+										}}
+										onClick={handleMenu}
+									>
+										{user.username[0]}
+									</Avatar>
+								</Tooltip>
+								<Menu
+									id="menu-appbar"
+									anchorEl={anchorEl}
+									anchorOrigin={{
+										vertical: 'top',
+										horizontal: 'right',
+									}}
+									keepMounted
+									transformOrigin={{
+										vertical: 'top',
+										horizontal: 'right',
+									}}
+									open={Boolean(anchorEl)}
+									onClose={handleClose}
+								>
+									<MenuItem onClick={handleUserLogout}>Log out</MenuItem>
+								</Menu>
+							</>
+						) : (
 							<Button
 								color="inherit"
-								onClick={onLogout}
-								startIcon={<ExitToApp />}
-								sx={{
-									'&:hover': {
-										backgroundColor: 'rgba(255, 255, 255, 0.1)',
-									},
+								onClick={() => {
+									navigate('/')
 								}}
 							>
-								Exit
+								Login
 							</Button>
-							<Tooltip title={username}>
-								<Avatar src={''} alt={username}>
-									{username && username.length > 0
-										? username.charAt(0).toUpperCase()
-										: 'U'}
-								</Avatar>
-							</Tooltip>
-						</Stack>
-					) : (
-						<Button color="inherit">Login</Button>
-					)}
+						)}
+					</Stack>
 				</Toolbar>
 			</AppBar>
 		</Box>
