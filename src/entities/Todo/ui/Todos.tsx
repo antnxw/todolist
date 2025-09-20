@@ -5,7 +5,6 @@ import { useState } from 'react'
 import type { TodoType } from '../model/todoType.ts'
 
 const Todos = () => {
-	// const [todos, setTodos] = useState<TodoType[]>(mockTodos);
 	const [newTodoTitle, setNewTodoTitle] = useState('')
 	const [newTodoDescription, setNewTodoDescription] = useState('')
 	const todos = useTodosStore((state) => state.todos)

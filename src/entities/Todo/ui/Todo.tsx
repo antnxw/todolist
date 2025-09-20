@@ -8,7 +8,7 @@ import {
 	TextField,
 	IconButton,
 } from '@mui/material'
-import { Edit, Save, Cancel, Delete } from '@mui/icons-material' // Delete иконка
+import { Edit, Save, Cancel, Delete } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import type { TodoType } from '../model/todoType.ts'
@@ -24,7 +24,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 	const [editTitle, setEditTitle] = useState(todo.title)
 	const [editDescription, setEditDescription] = useState(todo.description || '')
 	const { enqueueSnackbar } = useSnackbar()
-	const { deleteTodo } = useTodosStore() // удалить туду
+	const { deleteTodo } = useTodosStore()
 
 	const handleCheckClick = () => {
 		setTodo?.({ ...todo, completed: !todo.completed })
@@ -58,7 +58,6 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 		setIsEditing(false)
 	}
 
-	// функция удаления
 	const handleDelete = () => {
 		if (window.confirm('Удалить эту задачу?')) {
 			deleteTodo(todo._id)
@@ -79,11 +78,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 			onDoubleClick={handleDoubleClick}
 		>
 			<CardContent
-				sx={{
-					flexGrow: 1,
-					display: 'flex',
-					flexDirection: 'column',
-				}}
+				sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
 			>
 				{isEditing ? (
 					<Box sx={{ flexGrow: 1 }}>
@@ -120,11 +115,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 						{todo.description && (
 							<Typography
 								variant="body2"
-								sx={{
-									mb: 2,
-									wordBreak: 'break-word',
-									flexGrow: 1,
-								}}
+								sx={{ mb: 2, wordBreak: 'break-word', flexGrow: 1 }}
 							>
 								{todo.description}
 							</Typography>
@@ -154,12 +145,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 				</Box>
 			</CardContent>
 
-			<CardActions
-				sx={{
-					pt: 0,
-					minHeight: '48px',
-				}}
-			>
+			<CardActions sx={{ pt: 0, minHeight: '48px' }}>
 				{isEditing ? (
 					<Box
 						sx={{
@@ -209,8 +195,6 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 						>
 							<Edit />
 						</IconButton>
-
-						{/* кнопка удаления */}
 						<IconButton
 							size="small"
 							onClick={handleDelete}

@@ -18,7 +18,7 @@ export const userStore = createSlice({
 		setUser: (state, action) => {
 			state.user = action.payload
 		},
-		removerUser: (state) => {
+		removeUser: (state) => {
 			state.user = null
 		},
 		setIsLoading: (state, action) => {
@@ -33,5 +33,5 @@ export const userStore = createSlice({
 	},
 })
 
-export const { setUser, removerUser, setIsLoading } = userStore.actions
+export const { setUser, removeUser, setIsLoading } = userStore.actions
 export const { selectUser, selectIsLoading } = userStore.selectors

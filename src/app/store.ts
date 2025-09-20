@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { userStore } from '../entities/User/model/store/userStore.ts'
+import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts'
 import {
 	type TypedUseSelectorHook,
 	useDispatch,
@@ -10,6 +11,7 @@ import {
 export const store = configureStore({
 	reducer: {
 		userSlice: userStore.reducer,
+		todosSlice: useTodosStore.reducer,
 	},
 })
 
