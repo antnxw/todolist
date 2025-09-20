@@ -8,6 +8,10 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { Avatar, Stack, Tooltip } from '@mui/material'
 import { ExitToApp } from '@mui/icons-material'
 import { useTodosStore } from '../entities/Todo/model/store/useTodosStore.ts'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../entities/User/model/store/userStore.ts'
+import { useAppDispatch } from './store.ts'
 
 type AppBarProps = {
 	username: string | undefined
@@ -15,8 +19,11 @@ type AppBarProps = {
 }
 
 const ButtonAppBar = ({ username, onLogout }: AppBarProps) => {
-	const todos = useTodosStore((state) => state.todos)
+	const todos = useTodosStore((store) => store.todos)
 	const undoneTodos = todos.filter((todo) => !todo.completed)
+	const user = useSelector(selectUser)
+	const dispatch = useAppDispatch()
+
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">

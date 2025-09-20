@@ -1,21 +1,37 @@
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
+import { createSlice } from '@reduxjs/toolkit'
 import type { UserType } from '../userType.ts'
-import { autoLogin } from '../../../../shared/util/autoLogin.ts'
 
-type UserState = {
-	user: UserType | null
-	setUser: (user: UserType | null) => void
-	logout: () => void
+type UserStore = {
+	user: null | UserType
+	isLoading: boolean
 }
 
-export const useUserStore = create<UserState>()(
-	devtools((set) => ({
-		user: autoLogin(),
-		setUser: (user) => set({ user }),
-		logout: () => {
-			localStorage.removeItem('access_token')
-			set({ user: null })
+const initialState: UserStore = {
+	user: null,
+	isLoading: false,
+}
+
+export const userStore = createSlice({
+	name: 'userSlice',
+	initialState,
+	reducers: {
+		setUser: (state, action) => {
+			state.user = action.payload
 		},
-	}))
-)
+		removerUser: (state) => {
+			state.user = null
+		},
+		setIsLoading: (state, action) => {
+			state.isLoading = action.payload
+		},
+	},
+	selectors: {
+		selectUser: (state: UserStore) => {
+			return state.user
+		},
+		selectIsLoading: (state: UserStore) => state.isLoading,
+	},
+})
+
+export const { setUser, removerUser, setIsLoading } = userStore.actions
+export const { selectUser, selectIsLoading } = userStore.selectors
