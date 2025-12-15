@@ -1,15 +1,21 @@
 import { Button, Container, Input, Stack } from '@mui/material'
-import { useTodosStore } from '../model/store/useTodosStore.ts'
+import { addTodo, selectTodos, setTodos } from '../model/store/useTodosStore.ts'
 import { Todo } from './Todo.tsx'
-import { useState } from 'react'
+import { type ChangeEvent, useEffect, useState } from 'react'
 import type { TodoType } from '../model/todoType.ts'
+import { store, useAppDispatch, useAppSelector } from '../../../app/store.ts'
 
 const Todos = () => {
 	const [newTodoTitle, setNewTodoTitle] = useState('')
 	const [newTodoDescription, setNewTodoDescription] = useState('')
-	const todos = useTodosStore((state) => state.todos)
-	const addTodos = useTodosStore((state) => state.addTodo)
-	const setTodos = useTodosStore((state) => state.setTodos)
+
+	const todos = useAppSelector(selectTodos)
+	const state = useAppSelector((state) => state)
+	const dispatch = useAppDispatch()
+	useEffect(() => {
+		console.log(state)
+		console.log('getState', store.getState())
+	}, [])
 
 	const setTodo = (todo: TodoType) => {
 		const updatedTodos = todos.map((t) => {
@@ -18,14 +24,14 @@ const Todos = () => {
 			}
 			return t
 		})
-		setTodos(updatedTodos)
+		dispatch(setTodos(updatedTodos))
 	}
 
-	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTodoTitle(e.target.value)
 	}
 
-	const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTodoDescription(e.target.value)
 	}
 
@@ -39,7 +45,7 @@ const Todos = () => {
 			updatedAt: new Date().toISOString(),
 			order: todos.length + 1,
 		}
-		addTodos(newTodo)
+		dispatch(addTodo(newTodo))
 	}
 
 	return (

@@ -12,7 +12,8 @@ import { Edit, Save, Cancel, Delete } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import type { TodoType } from '../model/todoType.ts'
-import { useTodosStore } from '../model/store/useTodosStore.ts'
+import { deleteTodo } from '../model/store/useTodosStore.ts'
+import { useAppDispatch } from '../../../app/store.ts'
 
 type TodoProps = {
 	todo: TodoType
@@ -24,7 +25,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 	const [editTitle, setEditTitle] = useState(todo.title)
 	const [editDescription, setEditDescription] = useState(todo.description || '')
 	const { enqueueSnackbar } = useSnackbar()
-	const { deleteTodo } = useTodosStore()
+	const dispatch = useAppDispatch()
 
 	const handleCheckClick = () => {
 		setTodo?.({ ...todo, completed: !todo.completed })
@@ -60,7 +61,7 @@ export const Todo = ({ todo, setTodo }: TodoProps) => {
 
 	const handleDelete = () => {
 		if (window.confirm('Удалить эту задачу?')) {
-			deleteTodo(todo._id)
+			dispatch(deleteTodo(todo._id))
 			enqueueSnackbar('Задача удалена!', { variant: 'info' })
 		}
 	}

@@ -10,22 +10,14 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 } from '@mui/material'
-import {
-	AccountCircle,
-	Lock,
-	Visibility,
-	VisibilityOff,
-} from '@mui/icons-material'
+import { AccountCircle, Lock, Visibility, VisibilityOff } from '@mui/icons-material'
 import type { UserType } from '../model/userType.ts'
 import { rootApi } from '../../../shared/api/rootApi.ts'
 import { useSnackbar } from 'notistack'
 import { AxiosError } from 'axios'
-import {
-	selectIsLoading,
-	setIsLoading,
-	setUser,
-} from '../model/store/userStore.ts'
+import { selectIsLoading, selectUser, setIsLoading, setUser } from '../model/store/userStore.ts'
 import { useAppDispatch, useAppSelector } from '../../../app/store.ts'
+import { Navigate, useNavigate } from 'react-router'
 
 const Auth = () => {
 	const [email, setEmail] = useState('')
@@ -34,22 +26,25 @@ const Auth = () => {
 	const [showPassword, setShowPassword] = useState(false)
 	const { enqueueSnackbar } = useSnackbar()
 	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 	const loading = useAppSelector(selectIsLoading)
+	const user = useAppSelector(selectUser)
+
+	//Если пользователь уже авторизован – сразу редирекитим на главную
+	if (user) {
+		return <Navigate to="/" replace />
+	}
 
 	const handleClearFields = () => {
 		setEmail('')
 		setPassword('')
 	}
 
-	const handleEmailChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>
-	) => {
+	const handleEmailChange = (e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 		setEmail(e.currentTarget.value)
 	}
 
-	const handlePasswordChange = (
-		e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>
-	) => {
+	const handlePasswordChange = (e: SyntheticEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 		setPassword(e.currentTarget.value)
 	}
 
@@ -63,12 +58,12 @@ const Auth = () => {
 
 			const accessToken = loginData.data.access_token
 			localStorage.setItem('access_token', accessToken)
-			console.log('Auth.tsx', loginData.data)
-			const setUserAction = setUser(loginData.data)
-			console.log(setUserAction)
 			dispatch(setUser(loginData.data))
 			enqueueSnackbar('Welcome to Your Account!', { variant: 'success' })
 			handleClearFields()
+
+			//Редирект только после успешного логина
+			navigate('/')
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>
 			enqueueSnackbar(axiosError.response?.data.message || 'Unknown error', {
@@ -88,6 +83,9 @@ const Auth = () => {
 			})
 			enqueueSnackbar('Registration successful!', { variant: 'success' })
 			handleClearFields()
+
+			// После регистрации переключаемся на форму логина
+			setLoginFormName('login')
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>
 			enqueueSnackbar(axiosError.response?.data.message || 'Unknown error', {
@@ -98,14 +96,12 @@ const Auth = () => {
 		}
 	}
 
-	const handleChange = (
-		_event: React.MouseEvent<HTMLElement>,
-		newAlignment: string
-	) => {
+	const handleChange = (_event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
 		setLoginFormName(newAlignment)
 	}
 
 	const handleClickShowPassword = () => setShowPassword(!showPassword)
+
 	return (
 		<Container maxWidth={'sm'}>
 			<ToggleButtonGroup
@@ -168,9 +164,7 @@ const Auth = () => {
 								endAdornment: (
 									<InputAdornment position={'end'}>
 										<IconButton
-											aria-label={
-												showPassword ? 'hide password' : 'show password'
-											}
+											aria-label={showPassword ? 'hide password' : 'show password'}
 											onClick={handleClickShowPassword}
 											edge={'end'}
 										>
@@ -181,12 +175,7 @@ const Auth = () => {
 							},
 						}}
 					/>
-					<Button
-						onClick={handleLogin}
-						variant="contained"
-						loading={loading}
-						loadingPosition={'start'}
-					>
+					<Button onClick={handleLogin} variant="contained" disabled={loading}>
 						{loading ? 'Loading...' : 'Login'}
 					</Button>
 				</Stack>
@@ -226,17 +215,14 @@ const Auth = () => {
 						slotProps={{
 							input: {
 								startAdornment: (
-									////////////////////////////////////////////////////////////////////////////////////////
 									<InputAdornment position={'start'}>
-										<AccountCircle />
+										<Lock />
 									</InputAdornment>
 								),
 								endAdornment: (
 									<InputAdornment position={'end'}>
 										<IconButton
-											aria-label={
-												showPassword ? 'hide password' : 'show password'
-											}
+											aria-label={showPassword ? 'hide password' : 'show password'}
 											onClick={handleClickShowPassword}
 											edge={'end'}
 										>
@@ -247,13 +233,8 @@ const Auth = () => {
 							},
 						}}
 					/>
-					<Button
-						onClick={handleRegister}
-						variant={'contained'}
-						loadingPosition={'start'}
-						loading={loading}
-					>
-						{loading ? 'Loading' : 'Register'}
+					<Button onClick={handleRegister} variant={'contained'} disabled={loading}>
+						{loading ? 'Loading...' : 'Register'}
 					</Button>
 				</Stack>
 			)}
