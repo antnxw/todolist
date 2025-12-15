@@ -12,25 +12,32 @@ const initialState: UserStore = {
 }
 
 export const userStore = createSlice({
-	name: 'userSlice',
-	initialState,
+	//Это функция, которая ждёт объект-настройку
+	name: 'userSlice', //Назови этот кусок стора пользовательским слайсом
+	initialState, //Начальное состояние — вот этот объект
 	reducers: {
+		//reducers — это функции, которые обновляют state
 		setUser: (state, action) => {
+			//setUser: положи в state.user данные из action.payload
 			state.user = action.payload
 		},
 		removeUser: (state) => {
+			//removeUser: положи null в state.user
 			state.user = null
 		},
 		setIsLoading: (state, action) => {
+			//setIsLoading: запиши новое значение загрузки
 			state.isLoading = action.payload
 		},
 	},
 	selectors: {
+		//selectors — функции, которые достают нужные значения из state
 		selectUser: (state: UserStore) => {
+			//selectUser → верни state.user
 			return state.user
 		},
 		selectIsLoading: (state: UserStore) => state.isLoading,
-	},
+	}, //selectIsLoading → верни state.isLoading
 })
 
 export const { setUser, removeUser, setIsLoading } = userStore.actions

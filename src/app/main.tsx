@@ -1,4 +1,4 @@
-import CssBaseline from '@mui/material/CssBaseline'
+import { CssBaseline } from '@mui/material' //сбрасываем стили браузера, делая их везде одинаковыми
 import { createRoot } from 'react-dom/client'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
