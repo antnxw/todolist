@@ -12,7 +12,6 @@ import { useAppDispatch, useAppSelector } from './store.ts'
 import { NavLink, useLocation, useNavigate } from 'react-router'
 import { removeUser, selectUser } from '../entities/User/model/store/userStore.ts'
 import { selectTodosStats } from '../entities/Todo/model/store/selectors/todoSelectors.ts'
-import { ROUTES } from '../shared/constants/Routes.ts'
 
 const ButtonAppBar = () => {
 	const { mode, setMode } = useColorScheme()
@@ -22,7 +21,7 @@ const ButtonAppBar = () => {
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 	const navigate = useNavigate()
 	const location = useLocation() //взял location из роутера
-	const isAuthPage = location.pathname === ROUTES.auth //коррект проверка
+	const isAuthPage = location.pathname === '/auth' // проверка
 
 	if (!mode) {
 		return null
@@ -37,7 +36,7 @@ const ButtonAppBar = () => {
 		dispatch(removeUser())
 		localStorage.removeItem('access_token')
 		setAnchorEl(null)
-		navigate(ROUTES.auth)
+		navigate('/auth')
 	}
 
 	const handleToggle = () => {
@@ -50,6 +49,11 @@ const ButtonAppBar = () => {
 
 	const handleClose = () => {
 		setAnchorEl(null)
+	}
+
+	const handleRedirectToProfile = () => {
+		navigate('/profile')
+		handleClose()
 	}
 
 	return (
@@ -78,7 +82,7 @@ const ButtonAppBar = () => {
 						</Typography>
 						<Typography variant="h6" component="div">
 							<NavLink
-								to={ROUTES.about}
+								to={'/about'}
 								style={({ isActive }) => ({
 									color: 'inherit',
 									textDecoration: isActive ? 'underline' : 'none',
@@ -131,11 +135,12 @@ const ButtonAppBar = () => {
 									open={Boolean(anchorEl)}
 									onClose={handleClose}
 								>
+									<MenuItem onClick={handleRedirectToProfile}>Profile</MenuItem>
 									<MenuItem onClick={handleUserLogout}>Log out</MenuItem>
 								</Menu>
 							</>
 						) : (
-							<Button color="inherit" onClick={() => navigate(ROUTES.auth)}>
+							<Button color="inherit" onClick={() => navigate('/auth')}>
 								Login
 							</Button>
 						)}

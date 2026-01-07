@@ -1,5 +1,5 @@
-export const ROUTES = {
-	root: '/',
-	about: '/about',
-	auth: '/auth',
-}
+// export const ROUTES = {
+// 	root: '/',
+// 	about: '/about',
+// 	auth: '/auth',
+// }
