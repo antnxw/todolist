@@ -142,9 +142,6 @@ const Auth = () => {
 					Register
 				</ToggleButton>
 			</ToggleButtonGroup>
-			<Button variant={'contained'} color={'error'} fullWidth onClick={() => setError(true)}>
-				ERROR
-			</Button>
 
 			{loginFormName === 'login' ? (
 				<Stack spacing={2}>
