@@ -9,7 +9,7 @@ const Redirector = () => {
 	const dispatch = useAppDispatch()
 
 	if (!user && !userFromLS) {
-		return <Navigate to={'/auth/login'} />
+		return <Navigate to={'/auth'} />
 	}
 
 	if (!user && userFromLS) {

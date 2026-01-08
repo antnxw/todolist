@@ -1,13 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { UserType } from '../userType.ts'
+import { autoLogin } from '../../../../shared/util/autoLogin.ts'
 
 type UserStore = {
 	user: null | UserType
 	isLoading: boolean
 }
 
+const userFromLS = autoLogin()
+
 const initialState: UserStore = {
-	user: null,
+	user: userFromLS || null,
 	isLoading: false,
 }
 

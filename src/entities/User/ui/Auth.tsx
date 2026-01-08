@@ -29,10 +29,11 @@ const Auth = () => {
 	const navigate = useNavigate()
 	const loading = useAppSelector(selectIsLoading)
 	const user = useAppSelector(selectUser)
+	console.log('user auth', user)
 
 	//Если пользователь уже авторизован – сразу редирекитим на главную
 	if (user) {
-		return <Navigate to="/" replace />
+		return <Navigate to={'/'} />
 	}
 
 	const handleClearFields = () => {

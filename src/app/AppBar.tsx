@@ -9,7 +9,7 @@ import { Nightlight, WbSunny } from '@mui/icons-material'
 import MenuIcon from '@mui/icons-material/Menu'
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from './store.ts'
-import { NavLink, useLocation, useNavigate } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 import { removeUser, selectUser } from '../entities/User/model/store/userStore.ts'
 import { selectTodosStats } from '../entities/Todo/model/store/selectors/todoSelectors.ts'
 
@@ -20,15 +20,8 @@ const ButtonAppBar = () => {
 	const todosStats = useAppSelector(selectTodosStats)
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 	const navigate = useNavigate()
-	const location = useLocation() //взял location из роутера
-	const isAuthPage = location.pathname === '/auth' // проверка
 
 	if (!mode) {
-		return null
-	}
-
-	//скрыть АппБар на /auth
-	if (isAuthPage) {
 		return null
 	}
 
