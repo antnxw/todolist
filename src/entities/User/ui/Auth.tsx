@@ -29,10 +29,11 @@ const Auth = () => {
 	const navigate = useNavigate()
 	const loading = useAppSelector(selectIsLoading)
 	const user = useAppSelector(selectUser)
+	console.log('user auth', user)
 
 	//Если пользователь уже авторизован – сразу редирекитим на главную
 	if (user) {
-		return <Navigate to="/" replace />
+		return <Navigate to={'/'} />
 	}
 
 	const handleClearFields = () => {
@@ -99,8 +100,29 @@ const Auth = () => {
 	const handleChange = (_event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
 		setLoginFormName(newAlignment)
 	}
-
 	const handleClickShowPassword = () => setShowPassword(!showPassword)
+
+	//код с урока 14.ErrorBoundary
+
+	// const Auth = () => {
+	// 	const [loginFormName, setLoginFormName] = useState('login')
+	//  const [error, setError] = useState(false)
+	// 	const user = useAppSelector(selectUser)
+	// 	const loading = useAppSelector(selectIsLoading)
+	//
+	// 	const navigate = useNavigate()
+	//
+	// 	const handleChange = (_event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
+	// 		setLoginFormName(newAlignment)
+	// 		navigate(`/auth/${newAlignment}`)
+	// 	}
+	//
+	// 	if (user) {
+	// 		return <Navigate to={'/'} />
+	// 	}
+	//  if(error) {
+	//   throw new Error('Error')
+	// }
 
 	return (
 		<Container maxWidth={'sm'}>
@@ -121,6 +143,7 @@ const Auth = () => {
 					Register
 				</ToggleButton>
 			</ToggleButtonGroup>
+
 			{loginFormName === 'login' ? (
 				<Stack spacing={2}>
 					<TextField

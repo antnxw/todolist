@@ -1,21 +1,16 @@
 import { Button, Container, Input, Stack } from '@mui/material'
 import { addTodo, selectTodos, setTodos } from '../model/store/useTodosStore.ts'
 import { Todo } from './Todo.tsx'
-import { type ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, useState } from 'react'
 import type { TodoType } from '../model/todoType.ts'
-import { store, useAppDispatch, useAppSelector } from '../../../app/store.ts'
+import { useAppDispatch, useAppSelector } from '../../../app/store.ts'
 
 const Todos = () => {
 	const [newTodoTitle, setNewTodoTitle] = useState('')
 	const [newTodoDescription, setNewTodoDescription] = useState('')
 
 	const todos = useAppSelector(selectTodos)
-	const state = useAppSelector((state) => state)
 	const dispatch = useAppDispatch()
-	useEffect(() => {
-		console.log(state)
-		console.log('getState', store.getState())
-	}, [])
 
 	const setTodo = (todo: TodoType) => {
 		const updatedTodos = todos.map((t) => {
@@ -50,16 +45,8 @@ const Todos = () => {
 
 	return (
 		<Container>
-			<Input
-				placeholder={'title'}
-				value={newTodoTitle}
-				onChange={handleTitleChange}
-			/>
-			<Input
-				placeholder={'description'}
-				value={newTodoDescription}
-				onChange={handleDescriptionChange}
-			/>
+			<Input placeholder={'title'} value={newTodoTitle} onChange={handleTitleChange} />
+			<Input placeholder={'description'} value={newTodoDescription} onChange={handleDescriptionChange} />
 			<Button disabled={!newTodoTitle} onClick={handleAddTodo}>
 				Add
 			</Button>
